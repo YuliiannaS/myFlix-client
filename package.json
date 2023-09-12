@@ -1,0 +1,27 @@
+{
+  "name": "myflix-client",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YuliiannaS/myFlix-client.git"
+  },
+  "author": "Yuliia Shakhbazova",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/YuliiannaS/myFlix-client/issues"
+  },
+  "homepage": "https://github.com/YuliiannaS/myFlix-client#readme",
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@parcel/transformer-sass": "^2.9.3",
+    "process": "^0.11.10"
+  }
+}
