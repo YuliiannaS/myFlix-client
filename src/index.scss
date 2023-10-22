@@ -13,3 +13,9 @@ $body-color: #000000;
   border-radius: 4px;
   cursor: pointer;
 }
+
+input[type="text"],
+input[type="password"],
+input[type="email"] {
+  border: 1px solid gray;
+}
