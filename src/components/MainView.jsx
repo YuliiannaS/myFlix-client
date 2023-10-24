@@ -4,6 +4,7 @@ import { SignupView } from './SignupView';
 import { MovieCard } from './MovieCard';
 import { MovieView } from './MovieView';
 import { NavigationBar } from './NavigationBar';
+import { Profile } from './Profile';
 import Row from "react-bootstrap/Row";
 import Col from 'react-bootstrap/Col';
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
@@ -15,6 +16,11 @@ export const MainView = () => {
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [user, setUser] = useState(storedUser);
   const [token, setToken] = useState(storedToken);
+  const [filter, setFilter] = useState('');
+
+  useEffect(() => {
+    if (storedToken) setToken(storedToken);
+  }, []);
 
   useEffect(() => {
     if (!token) {
@@ -58,11 +64,32 @@ export const MainView = () => {
                   <Navigate to="/" />
                 ) : (
                   <Col md={5}>
-                    <LoginView onLoggedIn={(user) => setUser(user)} />
+                    <LoginView onLoggedIn={(user, token) => {
+                      setUser(user);
+                      setToken(token);
+                    }} />
                   </Col>
                 )}
               </>
 
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <>
+                {!user ? (
+                  <Navigate to="/login" replace />
+                ) : (
+                  <Col md={5}>
+                    <Profile user={user} token={token} setUser={setUser} deleteUser={() => {
+                      setUser(null);
+                      setToken(null);
+                      localStorage.clear();
+                    }} />
+                  </Col>
+                )}
+              </>
             }
           />
           <Route
@@ -75,7 +102,7 @@ export const MainView = () => {
                   <Col>The list is empty!</Col>
                 ) : (
                   <Col md={8}>
-                    <MovieView movies={movies} />
+                    <MovieView user={user} movies={movies} token={token} updateUser={setUser} />
                   </Col>
                 )}
               </>
@@ -91,11 +118,21 @@ export const MainView = () => {
                   <Col>The list is empty!</Col>
                 ) : (
                   <>
-                    {movies.map((movie) => (
-                      <Col className="mb-5" key={movie._id} md={3}>
-                        <MovieCard movie={movie} />
-                      </Col>
-                    ))}
+                    <div className="filter">
+                      <input
+                        type="text"
+                        placeholder="Filter by movie name"
+                        value={filter}
+                        onChange={(e) => setFilter(e.target.value)}
+                      />
+                    </div>
+                    {movies
+                      .filter(movie => movie.title.toLowerCase().includes(filter.toLowerCase())) // Filter movies by name
+                      .map((movie) => (
+                        <Col className="mb-5" key={movie._id} md={3}>
+                          <MovieCard movie={movie} />
+                        </Col>
+                      ))}
                   </>
                 )}
               </>
@@ -106,42 +143,3 @@ export const MainView = () => {
     </BrowserRouter>
   );
 };
-
-/* if (!user) {
-   return (
-     <>
-       <LoginView onLoggedIn={(user, token) => {
-         setUser(user);
-         setToken(token);
-       }} />
-       or
-       <SignupView />
-     </>
-   );
- }
-
- if (selectedMovie) {
-   return <MovieView movie={selectedMovie} onBackClick={() => setSelectedMovie(null)} />;
- }
-
- if (movies.length === 0) {
-   return <div>The list is empty!</div>;
- }
-
- return (
-   <>
-     <div>
-       {movies.map((movie) => (
-         <MovieCard
-           key={movie._id}
-           movie={movie}
-           onMovieClick={(newSelectedMovie) => {
-             setSelectedMovie(newSelectedMovie);
-           }}
-         />
-       ))}
-     </div>
-     <button onClick={() => { setUser(null); setToken(null); localStorage.clear(); }}>Logout</button>
-   </>
- );
-};*/
